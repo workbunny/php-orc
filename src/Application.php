@@ -19,12 +19,12 @@ class Application extends \Symfony\Component\Console\Application
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
         $this->setName(<<<doc
-                       __   __                           
-  _      ______  _____/ /__/ /_  __  ______  ____  __  __
- | | /| / / __ \/ ___/ //_/ __ \/ / / / __ \/ __ \/ / / /
- | |/ |/ / /_/ / /  / ,< / /_/ / /_/ / / / / / / / /_/ /  <comment>/</comment>
- |__/|__/\____/_/  /_/|_/_.___/\__,_/_/ /_/_/ /_/\__, /  <comment>/</comment> phpy-reqs-helper
-                                                /____/  <comment>/</comment> 
+                      __   __
+ _      ______  _____/ /__/ /_  __  ______  ____  __  __
+| | /| / / __ \/ ___/ //_/ __ \/ / / / __ \/ __ \/ / / /
+| |/ |/ / /_/ / /  / ,< / /_/ / /_/ / / / / / / / /_/ /  <comment>/</comment>
+|__/|__/\____/_/  /_/|_/_.___/\__,_/_/ /_/_/ /_/\__, /  <comment>/</comment> phpy-reqs-helper
+                                               /____/  <comment>/</comment> 
 doc
         );
         $this->setVersion(self::VERSION);
