@@ -8,8 +8,6 @@ use Throwable;
 
 class Application extends \Symfony\Component\Console\Application
 {
-
-    const NAME = 'phpy-reqs-helper';
     const VERSION = 'v0.1.0';
 
     /**
@@ -20,17 +18,16 @@ class Application extends \Symfony\Component\Console\Application
      */
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
-        $this->setVersion(self::VERSION);
-        $this->setName(self::NAME);
-        $output->writeln(<<<doc
+        $this->setName(<<<doc
                        __   __                           
   _      ______  _____/ /__/ /_  __  ______  ____  __  __
  | | /| / / __ \/ ___/ //_/ __ \/ / / / __ \/ __ \/ / / /
- | |/ |/ / /_/ / /  / ,< / /_/ / /_/ / / / / / / / /_/ / 
- |__/|__/\____/_/  /_/|_/_.___/\__,_/_/ /_/_/ /_/\__, /  
-                                                /____/  
+ | |/ |/ / /_/ / /  / ,< / /_/ / /_/ / / / / / / / /_/ /  <comment>/</comment>
+ |__/|__/\____/_/  /_/|_/_.___/\__,_/_/ /_/_/ /_/\__, /  <comment>/</comment> phpy-reqs-helper
+                                                /____/  <comment>/</comment> 
 doc
-);
+        );
+        $this->setVersion(self::VERSION);
         return parent::doRun($input, $output);
     }
 }
