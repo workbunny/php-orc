@@ -28,9 +28,7 @@ class PhpyInstall extends AbstractCommand
     {
         /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
-
         $version = $this->getInput()?->getArgument('version');
-
         // 询问安装目录
         $question = new Question("[?] <comment>Please specify the installation directory (default: .runtime): </comment>\n", getcwd() . '/.runtime');
         $installDir = $helper->ask($this->getInput(), $this->getOutput(), $question) . "/swoole-phpy-$version";
@@ -68,12 +66,6 @@ class PhpyInstall extends AbstractCommand
             return $this->error('Error building and installing PHPy extension.');
         }
 
-        // 添加扩展到php.ini
-        $this->comment('Adding extension to php.ini...');
-        if ($iniPath = php_ini_loaded_file()) {
-            file_put_contents($iniPath, 'extension=phpy.so' . PHP_EOL, FILE_APPEND);
-        }
-
         // 询问是否移除源码
         $question = new ConfirmationQuestion("[?] <comment>Do you want to remove the source code? [Y/n]: </comment> \n", true);
         if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
@@ -93,7 +85,7 @@ class PhpyInstall extends AbstractCommand
             }
         }
 
-        return $this->success('PHPy installation completed successfully.');
+        return $this->success('PHPy installation completed successfully. Please use `php -d extension=phpy {your_script.php}` or add `extension=phpy` to enable PHPy. ');
     }
 
     private function getSystemInstallCommands(): ?string
