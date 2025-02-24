@@ -12,6 +12,7 @@ class PyORCInstall extends AbstractCommand
     /** @inheritdoc  */
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->setName('pyorc-install')
             ->setDescription('Installs Python 3.10+ and the PyORC module.')

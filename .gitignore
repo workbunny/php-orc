@@ -3,6 +3,7 @@
 /.vscode
 /.venv
 /.runtime
+/.log
 /vendor
 composer.lock
 .phpunit.result.cache

@@ -21,13 +21,15 @@
   },
   "require": {
     "php": ">=8.1",
-    "swoole/phpy": "^1.0",
     "symfony/console": "^7.2"
   },
   "autoload": {
     "psr-4": {
       "Workbunny\\PhpOrc\\": "src"
     }
+  },
+  "suggest": {
+    "swoole/phpy": "For use PyOrc to read and write Apache ORC file format."
   },
   "require-dev": {
     "symfony/var-dumper": "^7.2",

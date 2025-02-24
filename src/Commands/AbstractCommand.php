@@ -5,10 +5,13 @@ namespace Workbunny\PhpOrc\Commands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractCommand extends Command
 {
+
+    public static bool $debug = false;
 
     /**
      * @var OutputInterface|null
@@ -19,6 +22,19 @@ abstract class AbstractCommand extends Command
      * @var InputInterface|null
      */
     protected ?InputInterface $input = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $runtimeId = null;
+
+    /**
+     * @return void
+     */
+    protected function configure(): void
+    {
+        $this->addOption('debug', null, InputOption::VALUE_NONE, 'Enable debug mode.');
+    }
 
     /**
      * @return OutputInterface|null
@@ -37,6 +53,30 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * @return string|null
+     */
+    public function getRuntimeId(): ?string
+    {
+        return $this->runtimeId;
+    }
+
+    /**
+     * @param string $info
+     * @return void
+     */
+    private function debugMode(string $info): void
+    {
+        if (self::$debug) {
+            $this->output($info = "DEBUG INFO -> $info");
+            $file = str_replace('\\','_', get_called_class()) . '-' . $this->getRuntimeId();
+            if (!is_dir($dir = getcwd() . "/.log")) {
+                mkdir($dir, 0777, true);
+            }
+            file_put_contents("$dir/$file.log", "$info\n", FILE_APPEND|LOCK_EX);
+        }
+    }
+
+    /**
      * 执行命令
      *
      * @param string $command
@@ -47,11 +87,13 @@ abstract class AbstractCommand extends Command
      */
     protected function exec(string $command, mixed &$output = null, mixed &$resultCode = 0, bool $ignore = false): string|int|bool|null
     {
+        $this->debugMode("exec( $command )");
         $lastLine = exec($command, $output, $resultCode);
         if ($resultCode !== 0 and !$ignore) {
             $this->error($lastLine);
             return $resultCode;
         }
+        $this->debugMode("->> rc: $resultCode | last info: $lastLine");
         return $lastLine;
     }
 
@@ -63,13 +105,15 @@ abstract class AbstractCommand extends Command
      */
     protected function system(string $command, ?int &$resultCode = 0, bool $ignore = false): string|int|bool|null
     {
+        $this->debugMode("system( $command )");
         $info = system($command, $resultCode);
         if ($resultCode !== 0) {
-            $this->error($info);
             if (!$ignore) {
+                $this->error($info);
                 return $resultCode;
             }
         }
+        $this->debugMode("->> rc: $resultCode | last info: $info");
         return $info;
     }
 
@@ -80,6 +124,7 @@ abstract class AbstractCommand extends Command
      */
     protected function execWithProgress(string $command, ?string &$lastLine = null): void
     {
+        $this->debugMode("execWithProgress( $command )");
         $process = popen($command, 'r');
         while (!feof($process)) {
             $line = fgets($process);
@@ -91,6 +136,7 @@ abstract class AbstractCommand extends Command
             }
             usleep(1000);
         }
+        $this->debugMode("->> rc: null | last info: $lastLine");
         pclose($process);
     }
 
@@ -144,8 +190,12 @@ abstract class AbstractCommand extends Command
     /** @inheritdoc  */
     final protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->runtimeId = uniqid();
         $this->input = $input;
         $this->output = $output;
+        if (self::$debug = $input->getOption('debug')) {
+            $this->comment("Run in debug mode. ID: {$this->getRuntimeId()}");
+        }
         return $this->handler();
     }
 

@@ -8,7 +8,6 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Filesystem\Filesystem;
 
 class PhpyInstall extends AbstractCommand
 {
@@ -16,10 +15,11 @@ class PhpyInstall extends AbstractCommand
     /** @inheritdoc  */
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->setName('phpy-install')
             ->setDescription('Installs PHP-ext PHPy.')
-            ->addArgument('version', InputArgument::REQUIRED, 'The version of PHPy to install');
+            ->addArgument('version', InputArgument::OPTIONAL, 'The version of PHPy to install', 'latest');
     }
 
     /** @inheritdoc  */
@@ -30,7 +30,7 @@ class PhpyInstall extends AbstractCommand
         $version = $this->getInput()?->getArgument('version');
         // 询问安装目录
         $question = new Question("[?] <comment>Please specify the installation directory (default: .runtime): </comment>\n", getcwd() . '/.runtime');
-        $installDir = $helper->ask($this->getInput(), $this->getOutput(), $question) . "/swoole-phpy-$version";
+        $installDir = $helper->ask($this->getInput(), $this->getOutput(), $question) . '/swoole_phpy_' . str_replace('.', '', $version);
 
         if (!file_exists($installDir)) {
             // 下载源码
@@ -55,21 +55,36 @@ class PhpyInstall extends AbstractCommand
         }
 
         // 询问 Python 安装路径
-        $question = new Question("[?] <comment>Please specify the Python installation directory (default: /usr):</comment> \n", '/usr');
+        $question = new Question("[?] <comment>Please specify the Python-config directory (default: /usr/bin/python-config):</comment> \n", '/usr/bin/python-config');
         $pythonDir = $helper->ask($this->getInput(), $this->getOutput(), $question);
 
         // 编译并安装拓展
         $this->comment('Building and installing PHPy extension...');
-        $this->system('cd ' . $installDir . ' && phpize && ./configure --with-python-dir=' . escapeshellarg($pythonDir) . ' && make && make install', $rc);
+        $this->system(
+            "cd $installDir && phpize && ./configure --with-python-config=$pythonDir && make clean && make && make install", $rc
+        );
         if ($rc !== 0) {
             return $this->error('Error building and installing PHPy extension.');
         }
 
         // 询问是否移除源码
-        $question = new ConfirmationQuestion("[?] <comment>Do you want to remove the source code? [Y/n]: </comment> \n", true);
+        $question = new ConfirmationQuestion("[?] <comment>Do you want to add ext-PHPy in php.ini? [Y/n]: </comment> \n", true);
         if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            $filesystem = new Filesystem();
-            $filesystem->remove($installDir);
+            $question = new Question("[?] <comment>Please specify the php.ini path (default: /usr/local/etc/php/conf.d/xx-php-ext-phpy.ini):</comment> \n", '/usr/local/etc/php/conf.d/xx-php-ext-phpy.ini');
+            $phpIniPath = $helper->ask($this->getInput(), $this->getOutput(), $question);
+            $this->system('echo "extension=phpy.so" > ' . $phpIniPath, $rc, true);
+            if ($rc !== 0) {
+                $this->error('Error removing source code. Your can remove it manually.');
+            }
+        }
+
+        // 询问是否移除源码
+        $question = new ConfirmationQuestion("[?] <comment>Do you want to remove the source code? (path: $installDir) [Y/n]: </comment> \n", true);
+        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
+            $this->system('rm -rf ' . $installDir, $rc, true);
+            if ($rc !== 0) {
+                $this->error('Error removing source code. Your can remove it manually.');
+            }
         }
 
         // 询问是否卸载编译依赖组件
@@ -77,14 +92,23 @@ class PhpyInstall extends AbstractCommand
         if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
             $removeCommands = $this->getSystemUninstallCommands();
             if ($removeCommands) {
-                $this->system($removeCommands, $rc);
+                $this->system($removeCommands, $rc, true);
                 if ($rc !== 0) {
-                    return $this->error('Error removing build dependencies.');
+                    $this->error('Error removing build dependencies. Your can remove it manually.');
                 }
             }
         }
 
-        return $this->success('PHPy installation completed successfully. Please use `php -d extension=phpy {your_script.php}` or add `extension=phpy` to enable PHPy. ');
+        // 询问是composer安装swoole/phpy
+        $question = new ConfirmationQuestion("[?] <comment>Do you want to require swoole/phpy? [y/N]: </comment> \n", false);
+        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
+            $this->system('composer require swoole/phpy --ignore-platform-req=ext-phpy', $rc, true);
+            if ($rc !== 0) {
+                $this->error('Error requiring PHPy via Composer. Your can require it manually.');
+            }
+        }
+
+        return $this->success('PHPy installation completed successfully. ');
     }
 
     private function getSystemInstallCommands(): ?string
