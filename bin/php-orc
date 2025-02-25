@@ -37,6 +37,7 @@ doc
 $application->addCommands([
     new \Workbunny\PhpOrc\Commands\PyORCInstall(),
     new \Workbunny\PhpOrc\Commands\PhpyInstall(),
+    new \Workbunny\PhpOrc\Commands\PythonInstall(),
 ]);
 try {
     $application->run();
