@@ -35,7 +35,8 @@
     "symfony/var-dumper": "^7.2",
     "phpunit/phpunit": "^10.0",
     "phpstan/phpstan": "^1.0",
-    "friendsofphp/php-cs-fixer": "^3.0"
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "swoole/phpy": "^1.0"
   },
   "bin": [
     "bin/php-orc"

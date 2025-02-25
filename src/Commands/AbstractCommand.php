@@ -136,7 +136,7 @@ abstract class AbstractCommand extends Command
             }
             usleep(1000);
         }
-        $this->debugMode("->> rc: null | last info: $lastLine");
+        $this->debugMode("> rc: null | last info: $lastLine");
         pclose($process);
     }
 

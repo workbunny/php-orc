@@ -17,7 +17,7 @@ class PhpyInstall extends AbstractCommand
     {
         parent::configure();
         $this
-            ->setName('phpy-install')
+            ->setName('install:phpy')
             ->setDescription('Installs PHP-ext PHPy.')
             ->addArgument('version', InputArgument::OPTIONAL, 'The version of PHPy to install', 'latest');
     }
@@ -54,14 +54,12 @@ class PhpyInstall extends AbstractCommand
             }
         }
 
-        // 询问 Python 安装路径
-        $question = new Question("[?] <comment>Please specify the Python-config directory (default: /usr/bin/python-config):</comment> \n", '/usr/bin/python-config');
-        $pythonDir = $helper->ask($this->getInput(), $this->getOutput(), $question);
-
+        $question = new Question("[?] <comment>Please specify the Python-config directory (default: /usr):</comment> \n", '/usr');
+        $pythonConfigDir = $helper->ask($this->getInput(), $this->getOutput(), $question);
         // 编译并安装拓展
         $this->comment('Building and installing PHPy extension...');
         $this->system(
-            "cd $installDir && phpize && ./configure --with-python-config=$pythonDir && make clean && make && make install", $rc
+            "cd $installDir && phpize && ./configure --with-python-config=$pythonConfigDir/bin/python-config && make clean && make && make install", $rc
         );
         if ($rc !== 0) {
             return $this->error('Error building and installing PHPy extension.');
