@@ -67,7 +67,7 @@ abstract class AbstractCommand extends Command
     private function debugMode(string $info): void
     {
         if (self::$debug) {
-            $this->output($info = "DEBUG INFO -> $info");
+            $this->subOutput($info = "DEBUG INFO -> $info");
             $file = str_replace('\\','_', get_called_class()) . '-' . $this->getRuntimeId();
             if (!is_dir($dir = getcwd() . "/.log")) {
                 mkdir($dir, 0777, true);
@@ -120,9 +120,9 @@ abstract class AbstractCommand extends Command
     /**
      * @param string $command
      * @param string|null $lastLine
-     * @return void
+     * @return int resultCode
      */
-    protected function execWithProgress(string $command, ?string &$lastLine = null): void
+    protected function execWithProgress(string $command, ?string &$lastLine = null): int
     {
         $this->debugMode("execWithProgress( $command )");
         $process = popen($command, 'r');
@@ -131,25 +131,40 @@ abstract class AbstractCommand extends Command
             if ($line === false) {
                 break;
             } else {
-                $lastLine = $line;
-                $this->output(trim($line));
+                $lastLine = trim($line);
+                if ($lastLine) {
+                    $this->subOutput($lastLine);
+                }
             }
             usleep(1000);
         }
         $this->debugMode("> rc: null | last info: $lastLine");
-        pclose($process);
+        return pclose($process);
+    }
+
+    /**
+     * sub输出
+     *
+     * @param string $message
+     * @param string $tag
+     * @return void
+     */
+    protected function subOutput(string $message, string $tag = '[>]'): void
+    {
+        $this->getOutput()?->getFormatter()->setStyle('sub-output', new OutputFormatterStyle('gray', null, ['underscore']));
+        $this->getOutput()?->writeln("$tag <sub-output>$message</sub-output>");
     }
 
     /**
      * 普通输出
      *
      * @param string $message
+     * @param string $tag
      * @return void
      */
-    protected function output(string $message): void
+    protected function output(string $message, string $tag = '[>]'): void
     {
-        $this->getOutput()?->getFormatter()->setStyle('sub-output', new OutputFormatterStyle('gray', null, ['underscore']));
-        $this->getOutput()?->writeln("[>] <sub-output>$message</sub-output>");
+        $this->getOutput()?->writeln("$tag $message");
     }
 
     /**

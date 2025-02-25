@@ -26,6 +26,7 @@ class PyORCInstall extends AbstractCommand
     protected function handler(): int
     {
         $version = $this->getInput()?->getArgument('version');
+        $this->output('Checking and installing Python PyORC ...');
         // 检查是否已安装Python3
         $pythonExists = $this->exec('command -v python3',  ignore: true);
         if (
@@ -42,30 +43,35 @@ class PyORCInstall extends AbstractCommand
         $currentPath = getcwd();
         $commandPrefix = $this->getInput()?->getOption('venv') ? "$currentPath/.venv/bin/" : '';
         // 检查pip版本并升级（如果需要）
-        $this->comment('Upgrading pip ...');
+        $this->output('Upgrading pip ...');
         $pipOutdated = $this->exec( "{$commandPrefix}pip list --outdated", ignore: true);
         if (str_contains($pipOutdated, 'pip ')) {
-            $this->execWithProgress("{$commandPrefix}pip install --upgrade pip");
-            $this->comment('pip is up-to-date.');
+            if ($this->execWithProgress("{$commandPrefix}pip install --upgrade pip") !== 0) {
+                return $this->error('Error upgrading pip.');
+            }
         } else {
             $this->comment('pip is already up-to-date.');
         }
 
-        $this->comment("Installing TZData ...");
+        $this->output("Installing TZData ...");
         $pyorcInstalled = $this->exec("{$commandPrefix}pip show tzdata", ignore: true);
         if (!$pyorcInstalled) {
-            $this->system("{$commandPrefix}pip install tzdata --break-system-packages");
-            $this->comment("TZData is installed.");
+            if ($this->execWithProgress("{$commandPrefix}pip install tzdata --break-system-packages") !== 0) {
+                return $this->error('Error installing TZData.');
+            }
         } else {
             $this->comment("TZData $version is already installed.");
         }
 
         // 检查是否已经安装了pyorc
-        $this->comment("Installing PyORC-$version ...");
+        $this->output("Installing PyORC-$version ...");
         $pyorcInstalled = $this->exec("{$commandPrefix}pip show pyorc", ignore: true);
         if (!$pyorcInstalled or ($version !== 'latest' and !str_contains($pyorcInstalled, "Version: $version"))) {
-            $this->system("{$commandPrefix}pip install pyorc" . ($version === 'latest' ? '' : "==$version") . ' --break-system-packages');
-            $this->comment("PyORC $version is installed.");
+            if ($this->execWithProgress(
+                "{$commandPrefix}pip install pyorc" . ($version === 'latest' ? '' : "==$version") . ' --break-system-packages'
+            )) {
+                return $this->error('Error installing PyORC.');
+            }
         } else {
             $this->comment("PyORC $version is already installed.");
         }
