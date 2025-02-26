@@ -26,7 +26,10 @@
   "autoload": {
     "psr-4": {
       "Workbunny\\PhpOrc\\": "src"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "suggest": {
     "swoole/phpy": "For use PyOrc to read and write Apache ORC file format."
@@ -36,7 +39,7 @@
     "phpunit/phpunit": "^10.0",
     "phpstan/phpstan": "^1.0",
     "friendsofphp/php-cs-fixer": "^3.0",
-    "swoole/phpy": "^1.0"
+    "swoole/phpy": "dev-main"
   },
   "bin": [
     "bin/php-orc"
