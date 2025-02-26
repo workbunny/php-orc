@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
+use function Workbunny\PhpOrc\open;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$reader = new Workbunny\PhpOrc\Reader(__DIR__ . '/example.orc','rb');
+$reader = new Workbunny\PhpOrc\Reader(open(__DIR__ . '/example-php.orc','rb'));
 // header schema
 dump(
     // 总行数

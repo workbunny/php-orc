@@ -10,6 +10,7 @@ use PyCore;
 use PyDict;
 use PyIter;
 use PyList;
+use PyObject;
 
 class Reader implements Countable
 {
@@ -20,8 +21,7 @@ class Reader implements Countable
     protected null|PyIter $reader;
 
     /**
-     * @param string $file
-     * @param string $mode
+     * @param string|PyObject $file
      * @param int $batch_size
      * @param PyList|null $column_indices
      * @param PyList|null $column_names
@@ -32,29 +32,28 @@ class Reader implements Countable
      * @param null $null_value
      */
     public function __construct(
-        string  $file,
-        string  $mode = 'rb',
-        int     $batch_size = 1024,
-        ?PyList $column_indices = null,
-        ?PyList $column_names = null,
-        string  $timezone = 'UTC',
-        int     $struct_repr = 0,
-        ?PyDict $converters = null,
-                $predicate = null,
-                $null_value = null
+        string|PyObject $file,
+        int             $batch_size = 1024,
+        ?PyList         $column_indices = null,
+        ?PyList         $column_names = null,
+        string          $timezone = 'UTC',
+        int             $struct_repr = 0,
+        ?PyDict         $converters = null,
+                        $predicate = null,
+                        $null_value = null
     )
     {
 
         $this->reader = PyCore::import('pyorc')->Reader(
-            open($file, $mode),
-            $batch_size,
-            $column_indices,
-            $column_names,
-            PyCore::import('zoneinfo')->ZoneInfo($timezone),
-            $struct_repr,
-            $converters,
-            $predicate,
-            $null_value
+            fileo: is_string($file) ? open($file, 'rb') : $file,
+            batch_size: $batch_size,
+            column_indices: $column_indices,
+            column_names: $column_names,
+            timezone: PyCore::import('zoneinfo')->ZoneInfo($timezone),
+            struct_repr: $struct_repr,
+            converters: $converters,
+            predicate: $predicate,
+            null_value: $null_value
         );
     }
 
