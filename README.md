@@ -1,9 +1,13 @@
-# php-orc
-🐇 PHP library for reading and writing Apache ORC file format. It uses the swoole/phpy extension to call the Python module PyORC for implementation.
+<p align="center"><img width="260px" src="https://chaz6chez.cn/images/workbunny-logo.png" alt="workbunny"></p>
+
+**<p align="center">workbunny/php-orc</p>**
+
+**<p align="center">🐇 PHP library for reading and writing Apache ORC file format. It uses the swoole/phpy extension to call the Python module PyORC for implementation. </p>**
+
 
 # 简介
 
-- 通过`swoole/PHPy`内联调用`python/pyorc`实现对ORC格式文件的读写
+- 通过`swoole/PHPy`内联调用`python/pyorc`实现对Apache ORC格式文件的读写
 
 # 安装
 
@@ -37,3 +41,9 @@
 - 继承`WriterClass`类进行写入操作的拓展开发或使用
 
 **详见 [examples目录](examples)**
+
+# 其他文件格式
+
+- Apache Parquet
+  1. https://github.com/flow-php/parquet
+  2. https://github.com/codename-hub/php-parquet
