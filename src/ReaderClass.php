@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Workbunny\PhpOrc;
 
+use Exception;
 use phpy\PyClass;
-use PyCore;
 use PyDict;
 use PyList;
 use PyObject;
@@ -40,7 +40,7 @@ class ReaderClass extends PyClass
      * @param PyDict|null $converters
      * @param null $predicate
      * @param null $null_value
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(
         string|PyObject $fileo,
@@ -58,7 +58,7 @@ class ReaderClass extends PyClass
         $this->attributes['batch_size'] = $batch_size;
         $this->attributes['column_indices'] = $column_indices;
         $this->attributes['column_names'] = $column_names;
-        $this->attributes['timezone'] = PyCore::import('zoneinfo')->ZoneInfo($timezone);
+        $this->attributes['timezone'] = cls('zoneinfo', 'ZoneInfo', $timezone);
         $this->attributes['struct_repr'] = $struct_repr;
         $this->attributes['converters'] = $converters;
         $this->attributes['predicate'] = $predicate;

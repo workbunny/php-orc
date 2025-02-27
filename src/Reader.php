@@ -6,9 +6,7 @@ namespace Workbunny\PhpOrc;
 
 use Closure;
 use Countable;
-use PyCore;
 use PyDict;
-use PyIter;
 use PyList;
 use PyObject;
 
@@ -16,9 +14,9 @@ class Reader implements Countable
 {
 
     /**
-     * @var PyIter|null
+     * @var PyObject|null
      */
-    protected null|PyIter $reader;
+    protected null|PyObject $reader;
 
     /**
      * @param string|PyObject $file
@@ -43,13 +41,12 @@ class Reader implements Countable
                         $null_value = null
     )
     {
-
-        $this->reader = PyCore::import('pyorc')->Reader(
+        $this->reader = cls('pyorc', 'Reader',
             fileo: is_string($file) ? open($file, 'rb') : $file,
             batch_size: $batch_size,
             column_indices: $column_indices,
             column_names: $column_names,
-            timezone: PyCore::import('zoneinfo')->ZoneInfo($timezone),
+            timezone: cls('zoneinfo', 'ZoneInfo', $timezone),
             struct_repr: $struct_repr,
             converters: $converters,
             predicate: $predicate,
@@ -58,9 +55,9 @@ class Reader implements Countable
     }
 
     /**
-     * @return PyIter|null
+     * @return PyObject|null
      */
-    public function getReader(): null|PyIter
+    public function getReader(): null|PyObject
     {
         return $this->reader;
     }

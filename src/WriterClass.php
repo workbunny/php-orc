@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Workbunny\PhpOrc;
 
 use phpy\PyClass;
-use PyCore;
 use PyObject;
 
 /**
@@ -44,7 +43,7 @@ class WriterClass extends PyClass
         int $memory_block_size = 65536
     ) {
         $this->attributes['fileo'] = is_string($fileo) ? open($fileo, 'ab') : $fileo;
-        $this->attributes['schema'] = PyCore::import('pyorc')->TypeDescription()->from_string($schema);
+        $this->attributes['schema'] = cls('pyorc', 'TypeDescription')->from_string($schema);
         $this->attributes['batch_size'] = $batch_size;
         $this->attributes['stripe_size'] = $stripe_size;
         $this->attributes['row_index_stride'] = $row_index_stride;
@@ -53,7 +52,7 @@ class WriterClass extends PyClass
         $this->attributes['compression_block_size'] = $compression_block_size;
         $this->attributes['bloom_filter_columns'] = $bloom_filter_columns;
         $this->attributes['bloom_filter_fpp'] = $bloom_filter_fpp;
-        $this->attributes['timezone'] = PyCore::import('zoneinfo')->ZoneInfo($timezone);
+        $this->attributes['timezone'] = cls('zoneinfo', 'ZoneInfo', $timezone);
         $this->attributes['struct_repr'] = $struct_repr;
         $this->attributes['converters'] = $converters;
         $this->attributes['padding_tolerance'] = $padding_tolerance;

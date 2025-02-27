@@ -51,3 +51,16 @@ function scalar(mixed $value): mixed
 {
     return PyCore::scalar($value);
 }
+
+/**
+ * 获取python类实例
+ *
+ * @param string $module 模块
+ * @param string $class 类名
+ * @param mixed ...$args 参数
+ * @return mixed
+ */
+function cls(string $module, string $class, mixed ...$args): mixed
+{
+    return PyCore::import($module)->$class(...$args);
+}

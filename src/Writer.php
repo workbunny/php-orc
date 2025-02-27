@@ -10,7 +10,10 @@ use PyObject;
 class Writer
 {
 
-    protected $writer;
+    /**
+     * @var PyObject|null
+     */
+    protected null|PyObject $writer;
 
     public function __construct(
         string|PyObject $file,
@@ -24,16 +27,17 @@ class Writer
         ?array          $bloom_filter_columns = null,
         float           $bloom_filter_fpp = 0.05,
         string          $timezone = 'UTC',
-        int $struct_repr = 0,
-        ?array $converters = null,
-        float $padding_tolerance = 0.0,
-        float $dict_key_size_threshold = 0.0,
-        mixed $null_value = null,
-        int $memory_block_size = 65536
-    ) {
-        $this->writer = PyCore::import('pyorc')->Writer(
+        int             $struct_repr = 0,
+        ?array          $converters = null,
+        float           $padding_tolerance = 0.0,
+        float           $dict_key_size_threshold = 0.0,
+        mixed           $null_value = null,
+        int             $memory_block_size = 65536
+    )
+    {
+        $this->writer = cls('pyorc', 'Writer',
             fileo: is_string($file) ? open($file, 'wb') : $file,
-            schema: PyCore::import('pyorc')->TypeDescription()->from_string($schema),
+            schema: cls('pyorc', 'TypeDescription')->from_string($schema),
             batch_size: $batch_size,
             stripe_size: $stripe_size,
             row_index_stride: $row_index_stride,
@@ -42,7 +46,7 @@ class Writer
             compression_block_size: $compression_block_size,
             bloom_filter_columns: $bloom_filter_columns,
             bloom_filter_fpp: $bloom_filter_fpp,
-            timezone: PyCore::import('zoneinfo')->ZoneInfo($timezone),
+            timezone: cls('zoneinfo', 'ZoneInfo', $timezone),
             struct_repr: $struct_repr,
             converters: $converters,
             padding_tolerance: $padding_tolerance,
