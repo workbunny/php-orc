@@ -26,8 +26,10 @@ class PythonInstall extends AbstractCommand
         $this->output('Checking and installing Python 3.10+ ...');
         // 检查是否已安装Python3
         $pythonExists = $this->exec('command -v python3',  ignore: true);
+        $pipExists = $this->exec('command -v pip3',  ignore: true);
         if (
             !$pythonExists or
+            !$pipExists or
             version_compare(
                 $this->pythonVersion = substr($this->exec('python3 --version', ignore: true), 7, 4),
                 '3.10',
