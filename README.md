@@ -24,4 +24,16 @@
 
 # 使用
 
-- 详见[examples目录](examples)
+## 直接调用
+
+- 实例化`Reader`类进行读取操作
+- 实例化`Writer`类进行写入操作
+
+**详见 [examples目录](examples)**
+
+## 继承开发 & 使用
+
+- 继承`ReaderClass`类进行读取操作的拓展开发或使用
+- 继承`WriterClass`类进行写入操作的拓展开发或使用
+
+**详见 [examples目录](examples)**

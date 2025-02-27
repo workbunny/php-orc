@@ -31,6 +31,17 @@ function str(mixed $value)
 }
 
 /**
+ * to python bytes
+ *
+ * @param mixed $value
+ * @return PyObject
+ */
+function bytes(mixed $value): PyObject
+{
+    return PyCore::bytes($value);
+}
+
+/**
  * python类型->php类型
  *
  * @param mixed $value

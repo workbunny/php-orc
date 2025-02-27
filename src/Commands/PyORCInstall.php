@@ -29,24 +29,26 @@ class PyORCInstall extends AbstractCommand
         $this->output('Checking and installing Python PyORC ...');
         // 检查是否已安装Python3
         $pythonExists = $this->exec('command -v python3',  ignore: true);
+        $pipExists = $this->exec('command -v pip3',  ignore: true);
         if (
             !$pythonExists or
+            !$pipExists or
             version_compare(
                 $this->pythonVersion = substr($this->exec('python3 --version', ignore: true), 7, 4),
                 '3.10',
                 '<'
             )
         ) {
-            return $this->error('Please run `bin/php-orc install:python` to install Python 3.10+.');
+            return $this->error('Please run `./vendor/bin/php-orc install:python` to install Python 3.10+.');
         }
 
         $currentPath = getcwd();
         $commandPrefix = $this->getInput()?->getOption('venv') ? "$currentPath/.venv/bin/" : '';
         // 检查pip版本并升级（如果需要）
         $this->output('Upgrading pip ...');
-        $pipOutdated = $this->exec( "{$commandPrefix}pip list --outdated", ignore: true);
+        $pipOutdated = $this->exec( "{$commandPrefix}pip3 list --outdated", ignore: true);
         if (str_contains($pipOutdated, 'pip ')) {
-            if ($this->execWithProgress("{$commandPrefix}pip install --upgrade pip") !== 0) {
+            if ($this->execWithProgress("{$commandPrefix}pip3 install --upgrade pip") !== 0) {
                 return $this->error('Error upgrading pip.');
             }
         } else {
@@ -54,9 +56,9 @@ class PyORCInstall extends AbstractCommand
         }
 
         $this->output("Installing TZData ...");
-        $pyorcInstalled = $this->exec("{$commandPrefix}pip show tzdata", ignore: true);
+        $pyorcInstalled = $this->exec("{$commandPrefix}pip3 show tzdata", ignore: true);
         if (!$pyorcInstalled) {
-            if ($this->execWithProgress("{$commandPrefix}pip install tzdata --break-system-packages") !== 0) {
+            if ($this->execWithProgress("{$commandPrefix}pip3 install tzdata --break-system-packages") !== 0) {
                 return $this->error('Error installing TZData.');
             }
         } else {
@@ -65,10 +67,10 @@ class PyORCInstall extends AbstractCommand
 
         // 检查是否已经安装了pyorc
         $this->output("Installing PyORC-$version ...");
-        $pyorcInstalled = $this->exec("{$commandPrefix}pip show pyorc", ignore: true);
+        $pyorcInstalled = $this->exec("{$commandPrefix}pip3 show pyorc", ignore: true);
         if (!$pyorcInstalled or ($version !== 'latest' and !str_contains($pyorcInstalled, "Version: $version"))) {
             if ($this->execWithProgress(
-                "{$commandPrefix}pip install pyorc" . ($version === 'latest' ? '' : "==$version") . ' --break-system-packages'
+                "{$commandPrefix}pip3 install pyorc" . ($version === 'latest' ? '' : "==$version") . ' --break-system-packages'
             )) {
                 return $this->error('Error installing PyORC.');
             }

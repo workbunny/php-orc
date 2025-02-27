@@ -79,10 +79,10 @@ class PythonInstall extends AbstractCommand
     {
         return match ($this->getSystemType()) {
             'alpine'    => 'apk add --no-cache python3 py3-pip python3-dev',
-            'redhat'    => 'sudo yum install -y python3 python3-venv python3-dev',
+            'redhat'    => 'sudo yum install -y python3 python3-venv python3-pip python3-dev',
             'darwin'    => 'brew install python3',
             'windows'   => null,
-            default     => 'sudo apt-get install -y python3 python3-venv python3-dev'
+            default     => 'sudo apt-get install -y python3 python3-venv python3-pip python3-dev'
         };
     }
 
@@ -90,6 +90,7 @@ class PythonInstall extends AbstractCommand
     {
         return match (true) {
             file_exists('/etc/alpine-release')                  => 'alpine',
+            file_exists('/etc/centos-release') ||
             file_exists('/etc/redhat-release')                  => 'redhat',
             stripos(php_uname('s'), 'Darwin') !== false    => 'darwin',
             stripos(php_uname('s'), 'Windows') !== false   => 'windows',

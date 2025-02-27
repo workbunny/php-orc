@@ -4,8 +4,11 @@
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Workbunny\PhpOrc\Commands\PhpyInstall;
+use Workbunny\PhpOrc\Commands\PyORCInstall;
+use Workbunny\PhpOrc\Commands\PythonInstall;
 
-require_once __DIR__ . '/../../../../vendor/autoload.php';
+require_once ($GLOBALS['_composer_autoload_path'] ?: dirname(__DIR__) . '/vendor/autoload.php');
 
 $application = new class extends Application
 {
@@ -35,9 +38,9 @@ doc
 
 
 $application->addCommands([
-    new \Workbunny\PhpOrc\Commands\PyORCInstall(),
-    new \Workbunny\PhpOrc\Commands\PhpyInstall(),
-    new \Workbunny\PhpOrc\Commands\PythonInstall(),
+    new PyORCInstall(),
+    new PhpyInstall(),
+    new PythonInstall(),
 ]);
 try {
     $application->run();

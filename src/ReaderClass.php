@@ -9,13 +9,26 @@ use PyCore;
 use PyDict;
 use PyList;
 use PyObject;
+use PyStr;
+use PyTuple;
 
-#[\AllowDynamicProperties]
+/**
+ * @property PyObject $schema
+ * @property PyObject $compression
+ * @property PyTuple $user_metadata
+ * @property PyStr $software_version
+ * @property PyStr $format_version
+ * @property PyStr $writer_id
+ * @property PyObject $writer_version
+ */
 #[\Inherit('Reader', 'pyorc')]
 class ReaderClass extends PyClass
 {
 
-    protected static array $attributes = [];
+    /**
+     * @var array
+     */
+    protected array $attributes = [];
 
     /**
      * @param string|PyObject $fileo
@@ -41,24 +54,51 @@ class ReaderClass extends PyClass
                         $null_value = null
     )
     {
-        self::$attributes['fileo'] = is_string($fileo) ? open($fileo, 'rb') : $fileo;
-        self::$attributes['batch_size'] = $batch_size;
-        self::$attributes['column_indices'] = $column_indices;
-        self::$attributes['column_names'] = $column_names;
-        self::$attributes['timezone'] = PyCore::import('zoneinfo')->ZoneInfo($timezone);
-        self::$attributes['struct_repr'] = $struct_repr;
-        self::$attributes['converters'] = $converters;
-        self::$attributes['predicate'] = $predicate;
-        self::$attributes['null_value'] = $null_value;
+        $this->attributes['fileo'] = is_string($fileo) ? open($fileo, 'rb') : $fileo;
+        $this->attributes['batch_size'] = $batch_size;
+        $this->attributes['column_indices'] = $column_indices;
+        $this->attributes['column_names'] = $column_names;
+        $this->attributes['timezone'] = PyCore::import('zoneinfo')->ZoneInfo($timezone);
+        $this->attributes['struct_repr'] = $struct_repr;
+        $this->attributes['converters'] = $converters;
+        $this->attributes['predicate'] = $predicate;
+        $this->attributes['null_value'] = $null_value;
         parent::__construct();
     }
 
-    public function __init()
+    public function __init(): void
     {
         $this->super()->__init__(
-            ...self::$attributes
+            ...$this->attributes
         );
     }
-}
 
+    /**
+     * 返回pyorc.Reader实例
+     *
+     * @return PyObject|null
+     */
+    public function __invoke(): ?PyObject
+    {
+        return $this->self();
+    }
+
+    /**
+     * 调用pyorc.Reader父类
+     *
+     * @return PyObject|null
+     */
+    public function parent(): ?PyObject
+    {
+        return $this->super();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function count()
+    {
+        return $this->super()->__len__();
+    }
+}
 PyClass::setProxyPath(__DIR__);
