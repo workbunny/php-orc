@@ -39,7 +39,7 @@
     "phpunit/phpunit": "^10.0",
     "phpstan/phpstan": "^1.0",
     "friendsofphp/php-cs-fixer": "^3.0",
-    "swoole/phpy": "dev-main"
+    "swoole/phpy": "^1.0"
   },
   "bin": [
     "bin/php-orc"
