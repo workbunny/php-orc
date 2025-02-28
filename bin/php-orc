@@ -8,7 +8,7 @@ use Workbunny\PhpOrc\Commands\PhpyInstall;
 use Workbunny\PhpOrc\Commands\PyORCInstall;
 use Workbunny\PhpOrc\Commands\PythonInstall;
 
-require_once ($GLOBALS['_composer_autoload_path'] ?: dirname(__DIR__) . '/vendor/autoload.php');
+require_once ($GLOBALS['_composer_autoload_path'] ?? dirname(__DIR__) . '/vendor/autoload.php');
 
 $application = new class extends Application
 {
