@@ -44,16 +44,6 @@ class PyORCInstall extends AbstractCommand
 
         $currentPath = getcwd();
         $commandPrefix = $this->getInput()?->getOption('venv') ? "$currentPath/.venv/bin/" : '';
-        // 检查pip版本并升级（如果需要）
-        $this->output('Upgrading pip ...');
-        $pipOutdated = $this->exec( "{$commandPrefix}pip3 list --outdated", ignore: true);
-        if (str_contains($pipOutdated, 'pip ')) {
-            if ($this->execWithProgress("{$commandPrefix}pip3 install --upgrade pip") !== 0) {
-                return $this->error('Error upgrading pip.');
-            }
-        } else {
-            $this->comment('pip is already up-to-date.');
-        }
 
         $this->output("Installing TZData ...");
         $pyorcInstalled = $this->exec("{$commandPrefix}pip3 show tzdata", ignore: true);
