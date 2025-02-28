@@ -95,4 +95,4 @@ class WriterClass extends PyClass
         return $this->super();
     }
 }
-PyClass::setProxyPath(__DIR__);
+PyClass::setProxyPath(__DIR__, getenv('WORKBUNNY_PHP_ORC_DEBUG') !== false);

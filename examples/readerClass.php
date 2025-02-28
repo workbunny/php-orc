@@ -8,6 +8,8 @@ use function Workbunny\PhpOrc\str;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+putenv('WORKBUNNY_PHP_ORC_DEBUG=1');
+
 $reader = new Workbunny\PhpOrc\ReaderClass(open(__DIR__ . '/example-php.orc','rb'));
 
 foreach ($reader() as $i => $row) {

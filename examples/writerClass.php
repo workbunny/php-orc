@@ -9,6 +9,8 @@ use function Workbunny\PhpOrc\str;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+putenv('WORKBUNNY_PHP_ORC_DEBUG=1');
+
 $writer = new Workbunny\PhpOrc\WriterClass(
     open(__DIR__ . '/example-php.orc','wb'),
     "struct<id:int,group:string,name:string,email:string>"
