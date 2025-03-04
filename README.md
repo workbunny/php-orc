@@ -18,29 +18,29 @@
     ```
   
 - 安装Python、pip、Python-dev
-    > 自行安装 或 通过`.vendor/bin/php-orc install:python`安装, `--help`查看帮助
+    > 自行安装 或 通过`.vendor/bin/php-orc install:python`安装, `.vendor/bin/php-orc install:python --help`查看帮助
 
 - 安装`PHPy`拓展
-    > 自行安装 或 通过`.vendor/bin/php-orc install:phpy`安装, `--help`查看帮助
+    > 自行安装 或 通过`.vendor/bin/php-orc install:phpy`安装, `.vendor/bin/php-orc install:phpy --help`查看帮助
 
 - 安装`pyorc`及依赖模块
-    > 自行安装 或 通过`.vendor/bin/php-orc install:pyorc`安装, `--help`查看帮助
+    > 自行安装 或 通过`.vendor/bin/php-orc install:pyorc`安装, `.vendor/bin/php-orc install:pyorc --help`查看帮助
 
 # 使用
 
-## 直接调用
+## 直接使用
 
-- 实例化`Reader`类进行读取操作
-- 实例化`Writer`类进行写入操作
+通过`swoole/PHPy`创建`Reader`和`Writer`实例，使用PHP代理类代理调用
 
-**详见 [examples目录](https://github.com/workbunny/php-orc/tree/main/examples)**
+- 实例化`Reader`类进行读取操作，详细参考[examples/reader.php](https://github.com/workbunny/php-orc/blob/main/examples/reader.php)
+- 实例化`Writer`类进行写入操作，详细参考[examples/writer.php](https://github.com/workbunny/php-orc/blob/main/examples/writer.php)
 
-## 继承开发 & 使用
+## 继承使用
 
-- 继承`ReaderClass`类进行读取操作的拓展开发或使用
-- 继承`WriterClass`类进行写入操作的拓展开发或使用
+通过`swoole/PHPy`创建`Reader`和`Writer`继承类，使用PHP类继承Python类，可直接调用/重写/拓展父类方法、参数
 
-**详见 [examples目录](https://github.com/workbunny/php-orc/tree/main/examples)**
+- 继承`ReaderClass`类进行读取操作的拓展开发或使用，详细参考[examples/readerClass.php](https://github.com/workbunny/php-orc/blob/main/examples/readerClass.php)
+- 继承`WriterClass`类进行写入操作的拓展开发或使用，详细参考[examples/writerClass.php](https://github.com/workbunny/php-orc/blob/main/examples/writerClass.php)
 
 # 说明
 

@@ -20,6 +20,8 @@ use PyTuple;
  * @property PyStr $format_version
  * @property PyStr $writer_id
  * @property PyObject $writer_version
+ * @method PyList read(int $num = -1)
+ * @method int seek(int $row, int $whence = 0)
  */
 #[\Inherit('Reader', 'pyorc')]
 class ReaderClass extends PyClass

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Workbunny\PhpOrc;
 
 use phpy\PyClass;
+use PyIter;
 use PyObject;
 
 /**
  * @property PyObject $schema
+ * @property int current_row
  * @method void set_user_metadata(PyObject...$kwargs)
  * @method void write(PyObject $object)
- * @method int writerows(PyObject $object)
+ * @method int writerows(PyIter $object)
  * @method void close()
  */
 #[\Inherit('Writer', 'pyorc')]
