@@ -13,7 +13,7 @@ use PyObject;
  * @property int current_row
  * @method void set_user_metadata(PyObject...$kwargs)
  * @method void write(PyObject $object)
- * @method int writerows(PyIter $object)
+ * @method int writerows(PyIter|PyObject $object)
  * @method void close()
  */
 #[\Inherit('Writer', 'pyorc')]
