@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Workbunny\PhpOrc;
 
-use Exception;
 use PyDict;
 use PyList;
 use PyObject;
 use PyStr;
 use PyTuple;
+use Workbunny\PhpOrc\Converters\ORCConverterClass;
+use Workbunny\PhpOrc\Enums\StructRepr;
+use Workbunny\PhpOrc\Enums\TypeKind;
 
 /**
  * @property PyObject $schema
@@ -32,27 +34,26 @@ class ReaderClass extends \PyClass
     protected array $attributes = [];
 
     /**
-     * @param string|PyObject $fileo
-     * @param int $batch_size
-     * @param PyList|null $column_indices
-     * @param PyList|null $column_names
-     * @param string $timezone
-     * @param int $struct_repr
-     * @param PyDict|null $converters
-     * @param null $predicate
+     * @param string|PyObject $fileo 文件对象
+     * @param int $batch_size 批量读取行数
+     * @param PyList|array|null $column_indices 按索引获取指定列
+     * @param PyList|array|null $column_names 按命名获取指定列
+     * @param string $timezone 时区
+     * @param int|StructRepr $struct_repr 返回数据的格式 {@link StructRepr}
+     * @param PyDict|array<TypeKind, ORCConverterClass>|null $converters
+     * @param Predicate|PredicateColumn|null $predicate 注：谓词过滤需要针对orc文件做排序处理，否则会导致过滤不生效
      * @param null $null_value
-     * @throws Exception
      */
     public function __construct(
-        string|PyObject $fileo,
-        int             $batch_size = 1024,
-        ?PyList         $column_indices = null,
-        ?PyList         $column_names = null,
-        string          $timezone = 'UTC',
-        int             $struct_repr = 0,
-        ?PyDict         $converters = null,
-                        $predicate = null,
-                        $null_value = null
+        string|PyObject                $fileo,
+        int                            $batch_size = 1024,
+        null|PyList|array              $column_indices = null,
+        null|PyList|array              $column_names = null,
+        string                         $timezone = 'UTC',
+        int|StructRepr                 $struct_repr = 0,
+        null|PyDict|array              $converters = null,
+        null|Predicate|PredicateColumn $predicate = null,
+                                       $null_value = null
     )
     {
         $this->attributes['fileo'] = is_string($fileo) ? open($fileo, 'rb') : $fileo;
@@ -60,9 +61,9 @@ class ReaderClass extends \PyClass
         $this->attributes['column_indices'] = $column_indices;
         $this->attributes['column_names'] = $column_names;
         $this->attributes['timezone'] = cls('zoneinfo', 'ZoneInfo', $timezone);
-        $this->attributes['struct_repr'] = $struct_repr;
+        $this->attributes['struct_repr'] = $struct_repr instanceof StructRepr ? $struct_repr->value : $struct_repr;
         $this->attributes['converters'] = $converters;
-        $this->attributes['predicate'] = $predicate;
+        $this->attributes['predicate'] = $predicate ? $predicate() : null;
         $this->attributes['null_value'] = $null_value;
         parent::__construct();
     }

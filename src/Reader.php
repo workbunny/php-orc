@@ -9,6 +9,9 @@ use Countable;
 use PyDict;
 use PyList;
 use PyObject;
+use Workbunny\PhpOrc\Converters\ORCConverterClass;
+use Workbunny\PhpOrc\Enums\StructRepr;
+use Workbunny\PhpOrc\Enums\TypeKind;
 
 class Reader implements Countable
 {
@@ -21,24 +24,24 @@ class Reader implements Countable
     /**
      * @param string|PyObject $file
      * @param int $batch_size
-     * @param PyList|null $column_indices
-     * @param PyList|null $column_names
+     * @param PyList|array|null $column_indices
+     * @param PyList|array|null $column_names
      * @param string $timezone
-     * @param int $struct_repr
-     * @param PyDict|null $converters
-     * @param null $predicate
+     * @param int|StructRepr $struct_repr
+     * @param PyDict|array<TypeKind, ORCConverterClass>|null $converters
+     * @param Predicate|PredicateColumn|null $predicate
      * @param null $null_value
      */
     public function __construct(
-        string|PyObject $file,
-        int             $batch_size = 1024,
-        ?PyList         $column_indices = null,
-        ?PyList         $column_names = null,
-        string          $timezone = 'UTC',
-        int             $struct_repr = 0,
-        ?PyDict         $converters = null,
-                        $predicate = null,
-                        $null_value = null
+        string|PyObject                $file,
+        int                            $batch_size = 1024,
+        null|PyList|array              $column_indices = null,
+        null|PyList|array              $column_names = null,
+        string                         $timezone = 'UTC',
+        int|StructRepr                 $struct_repr = 0,
+        null|PyDict|array              $converters = null,
+        null|Predicate|PredicateColumn $predicate = null,
+                                       $null_value = null
     )
     {
         $this->reader = cls('pyorc', 'Reader',
@@ -47,9 +50,9 @@ class Reader implements Countable
             column_indices: $column_indices,
             column_names: $column_names,
             timezone: cls('zoneinfo', 'ZoneInfo', $timezone),
-            struct_repr: $struct_repr,
+            struct_repr: $struct_repr instanceof StructRepr ? $struct_repr->value : $struct_repr,
             converters: $converters,
-            predicate: $predicate,
+            predicate: $predicate ? $predicate() : null,
             null_value: $null_value
         );
     }
