@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Workbunny\PhpOrc;
 
 use Exception;
-use phpy\PyClass;
 use PyDict;
 use PyList;
 use PyObject;
@@ -23,8 +22,8 @@ use PyTuple;
  * @method PyList read(int $num = -1)
  * @method int seek(int $row, int $whence = 0)
  */
-#[\Inherit('Reader', 'pyorc')]
-class ReaderClass extends PyClass
+#[\PyInherit('Reader', 'pyorc')]
+class ReaderClass extends \PyClass
 {
 
     /**
@@ -103,4 +102,4 @@ class ReaderClass extends PyClass
         return $this->super()->__len__();
     }
 }
-PyClass::setProxyPath(__DIR__);
+\PyClass::setProxyPath(__DIR__);

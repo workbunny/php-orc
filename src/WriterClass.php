@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Workbunny\PhpOrc;
 
-use phpy\PyClass;
 use PyIter;
 use PyObject;
 
@@ -16,8 +15,8 @@ use PyObject;
  * @method int writerows(PyIter|PyObject $object)
  * @method void close()
  */
-#[\Inherit('Writer', 'pyorc')]
-class WriterClass extends PyClass
+#[\PyInherit('Writer', 'pyorc')]
+class WriterClass extends \PyClass
 {
 
     /**
@@ -97,4 +96,4 @@ class WriterClass extends PyClass
         return $this->super();
     }
 }
-PyClass::setProxyPath(__DIR__);
+\PyClass::setProxyPath(__DIR__);

@@ -7,10 +7,9 @@ namespace Workbunny\PhpOrc;
 use Closure;
 use Exception;
 use Generator;
-use phpy\PyClass;
 
-#[\Inherit('Iterator', 'typing')]
-class Iterator extends PyClass
+#[\PyInherit('Iterator', 'typing')]
+class Iterator extends \PyClass
 {
     protected Generator $generator;
 
@@ -53,4 +52,4 @@ class Iterator extends PyClass
         return $res instanceof \PyIter ? $res : null;
     }
 }
-PyClass::setProxyPath(__DIR__);
+\PyClass::setProxyPath(__DIR__);

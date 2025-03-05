@@ -11,7 +11,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $reader = new Workbunny\PhpOrc\ReaderClass(open(__DIR__ . '/example-php.orc','rb'));
 
 foreach ($reader() as $i => $row) {
-    dump($i, PyCore::scalar($row));
+    dump(
+        "index: $i",
+        PyCore::scalar($row)
+    );
 }
 
-dump(scalar(str($reader->schema)));
+dump(
+    'schema: ' . scalar(str($reader->schema)),
+    "count: {$reader->count()}"
+);
